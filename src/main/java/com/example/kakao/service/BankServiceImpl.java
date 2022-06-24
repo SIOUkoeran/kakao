@@ -24,6 +24,7 @@ public class BankServiceImpl implements BankService {
 
     private final BankRepository bankRepository;
     private final AmountRepository amountRepository;
+    
     @Override
     @Transactional(readOnly = true)
     public List<ResponseBank> findAllBanks(){
@@ -31,7 +32,7 @@ public class BankServiceImpl implements BankService {
                 .map(ResponseBank::new)
                 .collect(Collectors.toList());
     }
-
+    
     @Override
     @Transactional(readOnly = true)
     public List<SupplyDto> statisticsSupply() {
