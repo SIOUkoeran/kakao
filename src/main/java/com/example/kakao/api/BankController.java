@@ -3,6 +3,7 @@ package com.example.kakao.api;
 
 import com.example.kakao.dto.Response;
 import com.example.kakao.dto.ResponseBank;
+import com.example.kakao.dto.SupplyDto;
 import com.example.kakao.model.Bank;
 import com.example.kakao.repository.BankRepository;
 import com.example.kakao.service.BankService;
@@ -30,5 +31,12 @@ public class BankController {
                 .message("find All Banks")
                 .data(allBanks)
                 .build();
+    }
+
+    @GetMapping("/statistics/supply")
+    public List<SupplyDto> statisticsSupply(){
+        log.info("statistics/supply all Bank In All Time");
+        return this.bankService.statisticsSupply();
+
     }
 }
