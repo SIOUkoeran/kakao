@@ -24,7 +24,13 @@ public class SupplyDto {
     }
 
     public void addMap(String key, Integer value){
-        detailAmount.put(key, value);
+        if (detailAmount.containsKey(key)){
+            Integer amount = detailAmount.get(key);
+
+            detailAmount.put(key, amount + value);
+        }else{
+            detailAmount.put(key, value);
+        }
     }
 
     public void setMaxAmount(Integer max){
