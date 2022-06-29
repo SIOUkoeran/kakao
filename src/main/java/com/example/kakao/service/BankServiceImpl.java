@@ -15,10 +15,17 @@ import org.hibernate.annotations.NotFound;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityNotFoundException;
+import java.lang.reflect.Field;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import static java.util.stream.Collectors.summingInt;
+
+import static java.util.stream.Collectors.summingInt;
 
 import static java.util.stream.Collectors.summingInt;
 
@@ -31,7 +38,6 @@ public class BankServiceImpl implements BankService {
 
     private final BankRepository bankRepository;
     private final AmountRepository amountRepository;
-    
     @Override
     @Transactional(readOnly = true)
     public List<ResponseBank> findAllBanks(){
