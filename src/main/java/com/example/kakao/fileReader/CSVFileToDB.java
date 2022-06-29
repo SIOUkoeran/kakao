@@ -4,7 +4,6 @@ import com.example.kakao.api.ResponseFileSave;
 import com.example.kakao.dto.CSVDto;
 import com.example.kakao.model.Amount;
 import com.example.kakao.model.Bank;
-import com.example.kakao.model.InstituteCode;
 import com.example.kakao.repository.AmountRepository;
 import com.example.kakao.repository.BankRepository;
 import lombok.RequiredArgsConstructor;
@@ -12,11 +11,8 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import java.time.*;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
+
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j
