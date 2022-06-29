@@ -13,5 +13,4 @@ public interface AmountRepository extends JpaRepository<Amount, Long> {
 
     List<Amount> findAmountsByBank(Bank bank);
     List<Amount> findAmountsByDateBetween(LocalDate start, LocalDate end);
-
 }
