@@ -2,21 +2,23 @@ package com.example.kakao.service;
 
 
 import com.example.kakao.dto.*;
+import com.example.kakao.exception.ExceptionCode;
+import com.example.kakao.exception.NotFoundBankException;
 import com.example.kakao.model.Amount;
 import com.example.kakao.model.Bank;
+import com.example.kakao.model.InstituteCode;
 import com.example.kakao.repository.AmountRepository;
 import com.example.kakao.repository.BankRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.annotations.NotFound;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityNotFoundException;
-import java.lang.reflect.Field;
+import java.time.LocalDate;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.summingInt;
 
@@ -29,6 +31,7 @@ public class BankServiceImpl implements BankService {
 
     private final BankRepository bankRepository;
     private final AmountRepository amountRepository;
+    
     @Override
     @Transactional(readOnly = true)
     public List<ResponseBank> findAllBanks(){
@@ -70,8 +73,6 @@ public class BankServiceImpl implements BankService {
                 .collect(Collectors.groupingBy(amount -> amount.getDate().getYear(),
                         Collectors.groupingBy(amount -> amount.getBank().getInstituteName(), summingInt(Amount::getAmount))));
 
-        Set<Integer> key = collect.keySet();
-        Comparator<Amount> comparator = Comparator.comparingInt(Amount::getAmount);
         Comparator<Entry<String, Integer>> comparator1 = makeComparator();
 
         Entry<String, Integer> stringIntegerEntry = collect.keySet().stream()
@@ -92,9 +93,9 @@ public class BankServiceImpl implements BankService {
             }
         }
 
-
         return new ResponseMaxBankInYear(stringIntegerEntry.getKey(), max);
     }
+
     private Comparator<Entry<String, Integer>> makeComparator(){
         return new Comparator<Entry<String, Integer>>(){
             @Override
@@ -102,7 +103,39 @@ public class BankServiceImpl implements BankService {
                 return o1.getValue().compareTo(o2.getValue());
             }
         };
+    }
 
+    @Override
+    @Transactional(readOnly = true)
+    public ResponseKEBInfo statisticsKEB() {
+        log.info("Statistics KEB");
+        Bank bank = this.bankRepository.findBankByInstituteCode(InstituteCode.KEB.getBankCode())
+                .orElseThrow(() -> new NotFoundBankException(ExceptionCode.NOT_FOUND_BANK));
+
+        Map<LocalDate, Double> averageByDate = this.amountRepository.findAmountsByBank(bank)
+                .stream()
+                .collect(Collectors.groupingBy(Amount::getDate))
+
+                .entrySet().stream()
+                .collect(Collectors.toMap(
+                                Entry::getKey,
+                                e -> e.getValue().stream()
+                                        .map(Amount::getAmount)
+                                        .mapToInt(Integer::intValue)
+                                        .average().orElseGet(() -> -1)
+                        )
+                );
+
+
+        LocalDate maxKey = Collections.max(averageByDate.entrySet(), Entry.comparingByValue()).getKey();
+        LocalDate minKey = Collections.min(averageByDate.entrySet(), Entry.comparingByValue()).getKey();
+
+        return new ResponseKEBInfo(InstituteCode.KEB.getBankName(),
+                    List.of(
+                            new ResponseKEBInfo.SupportAmount(minKey.getYear(), averageByDate.get(minKey).intValue()),
+                            new ResponseKEBInfo.SupportAmount(maxKey.getYear(), averageByDate.get(maxKey).intValue())
+                    )
+                );
     }
 
 }
