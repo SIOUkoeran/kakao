@@ -11,4 +11,5 @@ public interface BankService {
     public List<ResponseBank> findAllBanks();
     public ResponseSupply statisticsSupply();
     public ResponseMaxBankInYear statisticsMax();
+    public ResponseKEBInfo statisticsKEB();
 }

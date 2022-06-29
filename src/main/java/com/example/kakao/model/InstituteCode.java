@@ -22,7 +22,6 @@ public enum InstituteCode {
     NH("농협은행/수협은행", 8),
     KEB("외한은행",9),
     ETC("기타은행",10)
-
     ;
 
 

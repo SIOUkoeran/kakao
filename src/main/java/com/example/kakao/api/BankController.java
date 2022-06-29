@@ -42,4 +42,14 @@ public class BankController {
     public ResponseMaxBankInYear statisticsFindMaxInYear(){
         return this.bankService.statisticsMax();
     }
+
+    @GetMapping("/statistics/KEB")
+    public Response statisticsFindKEBInfo(){
+
+        return Response.builder()
+                .code("2000")
+                .message("statistics/KEB Average In Total")
+                .data(this.bankService.statisticsKEB())
+                .build();
+    }
 }
