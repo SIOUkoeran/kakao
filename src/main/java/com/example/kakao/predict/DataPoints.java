@@ -41,6 +41,8 @@ public class DataPoints {
                 .map(Amount::getAmount)
                 .mapToInt(Integer::intValue)
                 .toArray());
+
+
         return new DataPoints(x, y);
     }
 }
