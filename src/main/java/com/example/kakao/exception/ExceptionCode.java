@@ -2,7 +2,6 @@ package com.example.kakao.exception;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.aspectj.apache.bcel.classfile.Code;
 
 @RequiredArgsConstructor
 @Getter

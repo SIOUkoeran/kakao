@@ -11,21 +11,13 @@ import com.example.kakao.repository.AmountRepository;
 import com.example.kakao.repository.BankRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.annotations.NotFound;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityNotFoundException;
-import java.lang.reflect.Field;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import static java.util.stream.Collectors.summingInt;
-
-import static java.util.stream.Collectors.summingInt;
 
 import static java.util.stream.Collectors.summingInt;
 
@@ -144,4 +136,17 @@ public class BankServiceImpl implements BankService {
                 );
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public Map<LocalDate, List<Amount>> findAmountsByBank(Bank bank) {
+        return this.amountRepository.findAmountsByBank(bank)
+                .stream()
+                .collect(Collectors.groupingBy(Amount::getDate));
+    }
+
+    @Override
+    public Bank findBank(String bankName) {
+        return this.bankRepository.findBankByInstituteCode(InstituteCode.valueOf(bankName).getBankCode())
+                .orElseThrow(() -> new NotFoundBankException(ExceptionCode.NOT_FOUND_BANK));
+    }
 }
