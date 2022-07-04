@@ -8,5 +8,5 @@ import java.util.List;
 
 @Component
 public interface DBLoader {
-    public List<Amount> loadDB(Bank bank);
+    public List<Amount> loadDB(String bank);
 }
