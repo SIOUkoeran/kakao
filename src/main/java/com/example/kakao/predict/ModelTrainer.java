@@ -33,20 +33,10 @@ import java.nio.file.Paths;
 public class ModelTrainer {
 
     private final Logger log = LoggerFactory.getLogger(ModelTrainer.class);
-    private static ai.djl.Model createModel(){
-        ai.djl.Model model = ai.djl.Model.newInstance("lin-reg");
-        SequentialBlock net = new SequentialBlock();
-        Linear linearBlock = Linear.builder()
-                .optBias(true)
-                .setUnits(1)
-                .build();
-        net.add(linearBlock);
-        model.setBlock(net);
-        return model;
-    }
-    public Trainer initializeTrainer(NDManager manager){
 
-        ai.djl.Model model = createModel();
+
+    public Trainer initializeTrainer(NDManager manager, Model model){
+
         L2Loss l2Loss = Loss.l2Loss();
 
         DefaultTrainingConfig config = new DefaultTrainingConfig(l2Loss)
@@ -89,7 +79,7 @@ public class ModelTrainer {
         NDArray bParam = parameters.valueAt(1).getArray();
         float wFloat = wParam.getFloat();
         float bFloat = bParam.getFloat();
-        return new float[]{wFloat, bFloat};
+        return new float[]{bFloat, wFloat};
     }
 
     public void saveModel(Model model, int numEmpoch){
